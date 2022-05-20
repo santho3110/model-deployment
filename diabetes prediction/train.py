@@ -29,7 +29,7 @@ from sklearn.metrics import accuracy_score
 #Path to the training data source
 DATA_PATH = "gs://alpha-buck/pima-indians-diabetes.data"
 #Path to the model artifat
-ARTIFACT_BUCKET = "gs://diabetes-artifacts"
+ARTIFACT_BUCKET = "diabetes-artifacts"
 
 
 
@@ -73,13 +73,14 @@ model = 'model.joblib'
 joblib.dump(classifier, model)
 
 print('*'*100)
+y_pred = classifier.predict(x_test)
 accuracy = accuracy_score(y_test, y_pred)
 print("Succesfully trained model with accuracy ::", accuracy)
 
 # Upload the model to GCS
-bucket = storage.Client().bucket("retinapaty-artifacts")
+bucket = storage.Client().bucket(ARTIFACT_BUCKET)
 blob = bucket.blob('{}/{}'.format(
-    datetime.datetime.now().strftime('diabetes_%Y%m%d_%H%M%S'),
+    datetime.datetime.now().strftime('diabetes_%Y%m%d_%H%M%S'+'/model'),
     model))
 blob.upload_from_filename(model)
 
